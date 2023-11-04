@@ -1,1 +1,1 @@
-Chạy file solve.py với input là dữ liệu đầu vào
+Chạy file main.py với dataName tên file dữ liệu muốn chạy
