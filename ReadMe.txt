@@ -1,0 +1,1 @@
+Chạy file solve.py với input là dữ liệu đầu vào
