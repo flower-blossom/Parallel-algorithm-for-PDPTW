@@ -1,1 +1,0 @@
-Chạy file main.py với dataName tên file dữ liệu muốn chạy
