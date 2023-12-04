@@ -1,7 +1,10 @@
 from vns import VNS
+from pandas import read_excel
 import pandas
 import numpy as np
 from random import seed
+from multiprocessing import Pool, Process
+import time
 seed(2)
 
 
@@ -11,7 +14,7 @@ path = r'data\realworld dataset\\Datasets\\DowJones\\DowJones.xlsx'
 # my_data = pandas.read_excel(path, header=None)
 
 # Read API Data
-my_data = pandas.read_excel(path, index_col=0, header=0)
+my_data = read_excel(path, index_col=0, header=0)
 
 percentInOut = 0.2
 data_in  = my_data.iloc[:round(percentInOut*my_data.shape[0]), :]
@@ -25,8 +28,29 @@ covMatrixOut = data_out.cov().to_numpy()
 corrMatrixOut = data_out.corr().to_numpy()
 expectedVectorOut = np.mean(data_out.to_numpy(), axis=0)
 
-for i in range(10):
-    sol = VNS(maxIter=100, lamda=i/10, poolLocalSearchLevel=5,poolShakingLevel=5).solve(10, expectedVector, covMatrix, corrMatrix)
-    print(sol.objectiveFunction)
-    # print(sol.chosenAssetsList)
-    # print(sol.proportionOfAssetsList)
+
+
+if __name__ == '__main__': 
+    number = 50
+    processes  = []
+    # pool = Pool(processes=3)
+    startTime = time.time()
+    maxIter = 30
+    for i in range(number):
+        vnsAlgo = VNS(maxIter=maxIter, lamda=i/number, poolLocalSearchLevel=3,poolShakingLevel=3)
+        p = Process(target=vnsAlgo.solve, args=(10, expectedVector, covMatrix, corrMatrix))
+        p.start()
+        processes.append(p)
+    for t in processes:
+        t.join()
+    print("Done")
+    print("parallel time",time.time()- startTime)
+    
+    startTime = time.time()
+    for i in range(number):
+        vnsAlgo = VNS(maxIter=maxIter, lamda=i/number, poolLocalSearchLevel=3,poolShakingLevel=3)
+        p = vnsAlgo.solve(10, expectedVector, covMatrix, corrMatrix)
+
+    print("Done")
+    print("Sequence time",time.time()- startTime)
+
