@@ -2,7 +2,5 @@ numpy
 pandas
 qpsolvers
 cvxopt
-geneticalgorithm
 openpyxl
-numba
 matplotlib
