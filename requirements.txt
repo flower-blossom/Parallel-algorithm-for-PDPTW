@@ -5,3 +5,4 @@ cvxopt
 geneticalgorithm
 openpyxl
 numba
+matplotlib

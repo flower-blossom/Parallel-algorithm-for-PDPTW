@@ -61,9 +61,8 @@ def calculateSharpeRatio(assetsList, proportionOfAssetsList, expectedArr, covMat
 
 
 class VNS:
-    def __init__(self, maxIter=10000, lamda=0, delta=1e-16, poolShakingLevel=1, poolLocalSearchLevel=1, ) -> None:
+    def __init__(self, maxIter=10000, delta=1e-16, poolShakingLevel=1, poolLocalSearchLevel=1, ) -> None:
         self.delta = delta
-        self.lamda = lamda
         self.maxIter = maxIter
         self.poolShakingLevel: int = poolShakingLevel
         self.poolLocalSearchLevel: int = poolLocalSearchLevel
@@ -84,7 +83,7 @@ class VNS:
         self.poolSizeShaking = self.numberAssetsInPool(
             self.poolLocalSearchLevel, numberOfAssetsChoosed, quantityOfAssests)
 
-    def createSearchPool(self, expectedVector: ndarray, covMatrix: ndarray, quantityOfAssests) -> NoReturn:
+    def createSearchPool(self, lamda: float, expectedVector: ndarray, covMatrix: ndarray, quantityOfAssests) -> NoReturn:
         searchPool = np.zeros((quantityOfAssests, 2))
         thetaArr = np.zeros(quantityOfAssests + 1)
         rhoArr = np.zeros(quantityOfAssests + 1)
@@ -92,8 +91,8 @@ class VNS:
         for idxAsset in range(quantityOfAssests):
             rho = sum(covMatrix[idxAsset, secondIdxAsset]
                       for secondIdxAsset in range(quantityOfAssests))
-            rhoArr[idxAsset] = 1 + self.lamda*rho/quantityOfAssests
-            thetaArr[idxAsset] = 1 + (1 - self.lamda)*expectedVector[idxAsset]
+            rhoArr[idxAsset] = 1 + lamda*rho/quantityOfAssests
+            thetaArr[idxAsset] = 1 + (1 - lamda)*expectedVector[idxAsset]
         omega = -min(thetaArr)
         psi = -min(rhoArr)
 
@@ -107,14 +106,14 @@ class VNS:
         # Sort pool by value
         self.searchPool = searchPool[searchPool[:, 1].argsort()][::-1]
 
-    def initialSolution(self, numberOfAssetsChoosed: int, expectedVector, covMatrix) -> Solution:
+    def initialSolution(self, lamda: float, numberOfAssetsChoosed: int, expectedVector, covMatrix) -> Solution:
         chosenAssetsList = []
         searchPool = self.searchPool
         for num in range(numberOfAssetsChoosed):
             idxAsset, _ = searchPool[num]
             chosenAssetsList.append(int(idxAsset))
         currentSolution = Solution(chosenAssetsList)
-        executionQP(currentSolution, self.lamda, expectedVector, covMatrix,)
+        executionQP(currentSolution, lamda, expectedVector, covMatrix,)
         return currentSolution
 
     def shaking(self, levelNeighbor: int, currentSolution: Solution,) -> NoReturn:
@@ -129,7 +128,7 @@ class VNS:
                     break
         return Solution(chosenAssetsList)
 
-    def localSearch(self, currentSolution: Solution, numberOfAssetsChoosed: int,
+    def localSearch(self, lamda:float, currentSolution: Solution, numberOfAssetsChoosed: int,
                     expectedVector, covMatrix) -> Solution:
         tempSolution = deepcopy(currentSolution)
         bestFoundSolution = deepcopy(currentSolution)
@@ -138,7 +137,7 @@ class VNS:
                 if newAssetIdx not in tempSolution.chosenAssetsList:
                     # print(newAssetIdx)
                     tempSolution.chosenAssetsList[idx] = newAssetIdx
-                    executionQP(tempSolution, self.lamda,
+                    executionQP(tempSolution, lamda,
                                 expectedVector, covMatrix,)
                     # print(f"tempSolution.objectiveFunction: {tempSolution.objectiveFunction}")
                     if bestFoundSolution.objectiveFunction > tempSolution.objectiveFunction:
@@ -148,13 +147,13 @@ class VNS:
         return bestFoundSolution
 
     def solve(self,
-              numberOfAssetsChoosed: int, expectedVector: ndarray,
+              numberOfAssetsChoosed: int, lamda:float ,expectedVector: ndarray,
               covMatrix: ndarray, corMarix: ndarray) -> Solution:
         quantityOfAssests = expectedVector.shape[0]
-        self.createSearchPool(expectedVector, covMatrix, quantityOfAssests)
+        self.createSearchPool(lamda, expectedVector, covMatrix, quantityOfAssests)
         self.setPoolSize(numberOfAssetsChoosed,  quantityOfAssests)
 
-        currentSolution = self.initialSolution(
+        currentSolution = self.initialSolution(lamda, 
             numberOfAssetsChoosed, expectedVector, covMatrix)
         self.bestSolution = deepcopy(currentSolution)
         # print(currentSolution.objectiveFunction)
@@ -167,11 +166,11 @@ class VNS:
             improvementCondition = False
             while levelNeighbor <= numberOfAssetsChoosed:
                 solutionShaking = self.shaking(levelNeighbor, currentSolution)
-                executionQP(solutionShaking, self.lamda, expectedVector, covMatrix,)
+                executionQP(solutionShaking, lamda, expectedVector, covMatrix,)
                 numberLoop += 1
                 # print(f"solutionShaking: {solutionShaking.objectiveFunction}")
                 if currentSolution.objectiveFunction < solutionShaking.objectiveFunction:
-                    solutionlocalSearch = self.localSearch(
+                    solutionlocalSearch = self.localSearch(lamda,
                         solutionShaking, numberOfAssetsChoosed, expectedVector, covMatrix)
                     numberLoop += 1
                     # print(f"solutionlocalSearch: {solutionlocalSearch.objectiveFunction}")

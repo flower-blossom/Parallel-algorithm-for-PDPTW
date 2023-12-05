@@ -1,8 +1,8 @@
 from vns import VNS
 from pandas import read_excel
-import pandas
 import numpy as np
 from random import seed
+from copy import deepcopy
 from multiprocessing import Pool, Process
 import time
 seed(2)
@@ -31,25 +31,32 @@ expectedVectorOut = np.mean(data_out.to_numpy(), axis=0)
 
 
 if __name__ == '__main__': 
-    number = 50
+    number = 10
     processes  = []
-    # pool = Pool(processes=3)
     startTime = time.time()
-    maxIter = 30
-    for i in range(number):
-        vnsAlgo = VNS(maxIter=maxIter, lamda=i/number, poolLocalSearchLevel=3,poolShakingLevel=3)
-        p = Process(target=vnsAlgo.solve, args=(10, expectedVector, covMatrix, corrMatrix))
-        p.start()
-        processes.append(p)
-    for t in processes:
-        t.join()
-    print("Done")
-    print("parallel time",time.time()- startTime)
+    maxIter = 200
+    max_processes = 4
+    results_async = []
+    startTime = time.time()
+    with Pool(processes=max_processes) as pool:
+        for i in range(number):
+            vnsAlgo = VNS(maxIter=maxIter, poolLocalSearchLevel=3,poolShakingLevel=3)
+            results_async.append(pool.apply_async(vnsAlgo.solve, args=(10, i/number, deepcopy(expectedVector), deepcopy(covMatrix), deepcopy(corrMatrix))))
+        results = [result.get() for result in results_async]
+    print("parallel time1",time.time()- startTime)   
+    
+    startTime = time.time()
+    with Pool(processes=max_processes) as pool:
+        for i in range(number):
+            vnsAlgo = VNS(maxIter=maxIter, poolLocalSearchLevel=3,poolShakingLevel=3)
+            results_async.append(pool.apply_async(vnsAlgo.solve, args=(10, i/number,expectedVector, covMatrix, corrMatrix)))
+        results = [result.get() for result in results_async]
+    print("parallel time2 ",time.time()- startTime) 
     
     startTime = time.time()
     for i in range(number):
-        vnsAlgo = VNS(maxIter=maxIter, lamda=i/number, poolLocalSearchLevel=3,poolShakingLevel=3)
-        p = vnsAlgo.solve(10, expectedVector, covMatrix, corrMatrix)
+        vnsAlgo = VNS(maxIter=maxIter, poolLocalSearchLevel=3,poolShakingLevel=3)
+        p = vnsAlgo.solve(10, i/number, expectedVector, covMatrix, corrMatrix)
 
     print("Done")
     print("Sequence time",time.time()- startTime)
