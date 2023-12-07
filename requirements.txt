@@ -4,3 +4,4 @@ qpsolvers
 cvxopt
 openpyxl
 matplotlib
+plotly

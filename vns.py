@@ -28,8 +28,7 @@ def executionQP(currentSol: Solution, lamda: float,
         for idx2, secondAsset in enumerate(chosenAssetsList):
             P[idx1, idx2] = lamda*covMatrix[int(firstAsset), int(secondAsset)]
 
-    q = -np.array([(1 - lamda)*expectedVector[asset]
-                  for asset in chosenAssetsList])
+    q = -(1 - lamda)*np.array([expectedVector[asset] for asset in chosenAssetsList])
     A = np.ones(numberOfAssets)
     b = np.array([1.])
     lb = minProportion * np.ones(numberOfAssets)
@@ -61,8 +60,7 @@ def calculateSharpeRatio(assetsList, proportionOfAssetsList, expectedArr, covMat
 
 
 class VNS:
-    def __init__(self, maxIter=10000, delta=1e-16, poolShakingLevel=1, poolLocalSearchLevel=1, ) -> None:
-        self.delta = delta
+    def __init__(self, maxIter=10000, poolShakingLevel=1, poolLocalSearchLevel=1,) -> None:
         self.maxIter = maxIter
         self.poolShakingLevel: int = poolShakingLevel
         self.poolLocalSearchLevel: int = poolLocalSearchLevel
@@ -155,6 +153,7 @@ class VNS:
 
         currentSolution = self.initialSolution(lamda, 
             numberOfAssetsChoosed, expectedVector, covMatrix)
+        initialSolution = deepcopy(currentSolution)
         self.bestSolution = deepcopy(currentSolution)
         # print(currentSolution.objectiveFunction)
         # print(currentSolution.chosenAssetsList)
@@ -185,9 +184,8 @@ class VNS:
                     levelNeighbor = 1
                 if numberLoop > self.maxIter:
                     break
-            # print(numberLoop)
             if self.bestSolution.objectiveFunction > currentSolution.objectiveFunction:
                 self.bestSolution = deepcopy(currentSolution)    
             if numberLoop > self.maxIter:
                 break                
-        return self.bestSolution
+        return self.bestSolution, initialSolution
