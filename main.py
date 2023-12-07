@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 seed(3)
 
 
-with open('D:\\Code\\ttss\\data\\OR-Library\\unconstrained_efficient_frontiers\\portef1.txt', 'r') as file:
+with open('D:\\Code\\ttss\\data\\OR-Library\\unconstrained_efficient_frontiers\\portef5.txt', 'r') as file:
     data = getUnconstrainedFrontierData(file)
 x = []
 y = []
@@ -25,7 +25,7 @@ plt.xlabel('Variance')
 # plt.show()
 
 
-with open('data\\OR-Library\\format_data\\port1.txt', 'r') as file:
+with open('data\\OR-Library\\format_data\\port5.txt', 'r') as file:
     data = [line.strip("\n") for line in file.readlines()]
 
 meanReturnVector, standardDeviationVector, covMatrix, corrMatrix = processingORLibraryData(data)

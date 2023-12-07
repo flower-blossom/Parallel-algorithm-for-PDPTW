@@ -2,10 +2,6 @@ import numpy as np
 import math
 from time import time
 from vns import VNS
-from random import seed
-from multiprocessing import Pool
-seed(2)
-
 
 def calculateSharpeRatio(assetsList, proportionOfAssetsList, expectedVector, std):
     xichMa = 0
@@ -46,6 +42,40 @@ def runRealworldDataset(data_in, lamda):
     print("Done! ", time())
     return sol[0]
     
-    # def getSolution
-# def caculateOutPut():
+#  def caculateReturnSolutionOutSample(path, data: DataFrame):
+#     matrix = np.loadtxt(path)
+#     matrix = matrix.T
+#     for windowTime in range(0, len(data), timeRebalance):
+#         # data_in  = data.iloc[:startWindow +  windowTime, :]
+#         data_out = data.iloc[startWindow + windowTime: startWindow + windowTime+ timeRebalance, :]
+        
+#         results_async.append(pool.apply_async(runRealworldDataset, args=(data_in, lamda)))
+#         if startWindow + windowTime+ timeRebalance >= len(data):
+#             break
     
+def calculate_sortino_ratio(returns, risk_free_rate = 0):
+    # Calculating the average return.
+    average_return = np.mean(returns)
+ 
+    # Calculating the downside deviation of the returns.
+    downside_returns = [r - risk_free_rate for r in returns if r < risk_free_rate]
+    downside_deviation = np.std(downside_returns)
+ 
+    # Calculating the Sortino ratio.
+    sortino_ratio = average_return / downside_deviation
+ 
+    # Returning the calculated Sortino ratio.
+    return sortino_ratio
+    
+def calculate_sharpe_ratio(returns):
+    # Calculating the average return.
+    average_return = np.mean(returns)
+ 
+    # Calculating the standard deviation of the returns.
+    std_deviation = np.std(returns)
+ 
+    # Calculating the Sharpe ratio.
+    sharpe_ratio = average_return / std_deviation
+ 
+    # Returning the calculated Sharpe ratio.
+    return sharpe_ratio    

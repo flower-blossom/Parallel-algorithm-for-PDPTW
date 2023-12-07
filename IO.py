@@ -1,5 +1,6 @@
 from numpy import ndarray, maximum, zeros
 from util import calculateSharpeRatio
+from json import dump
 
 def processingORLibraryData(data: list) -> [ndarray, ndarray, ndarray, ndarray]:
     numberOfAssets = int(data[0])
@@ -38,18 +39,22 @@ def takeInfoAssetInAPI(sol, expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
     valueIn = calculateSharpeRatio(chosenAssetsList, proportionOfAssetsList, expectedVectorIn, stdOut)
     print(f"Sharpe Ratio in sample In: {valueIn[0]}")
 
-
     # Print name assets if it use api data
+    sol = {}
     if len(expectedVectorIn) == 16:
         nameOfAssets = ['BTC_USD', 'ETH_USD', 'XRP_USD', 'ADA_USD', 'TRX_USD', 'SOL_USD', 'UNI_USD', 'AVAX_USD', 'LINK_USD', 'BNB_USD', 'ATOM_USD', 'ETC_USD', 'NEAR_USD', 'FTM_USD', 'DOGE_USD', 'MATIC_USD']
+        
         print(f"Chosen assets: ")
         for idx in range(len(chosenAssetsList)):
+            sol[nameOfAssets[chosenAssetsList[idx]]] = round(proportionOfAssetsList[idx]*100, 2)
             print(f"{nameOfAssets[chosenAssetsList[idx]]} - {round(proportionOfAssetsList[idx]*100, 2)} %")
-    elif len(expectedVectorIn) == 17: 
+            
+    elif len(expectedVectorIn) == 17:
+         
         nameOfAssets = ['BTC_USD', 'ETH_USD', 'XRP_USD', 'ADA_USD', 'TRX_USD', 'SOL_USD', 'UNI_USD', 'AVAX_USD', 'LINK_USD', 'BNB_USD', 'ATOM_USD', 'ETC_USD', 'NEAR_USD', 'LUNC_USD', 'FTM_USD', 'DOGE_USD', 'MATIC_USD']
         print(f"Chosen assets: ")
         for idx in range(len(chosenAssetsList)):
             print(f"{nameOfAssets[chosenAssetsList[idx]]} - {round(proportionOfAssetsList[idx]*100, 2)} %")
-            
-# def processSolution            
-            
+            sol[nameOfAssets[chosenAssetsList[idx]]] = round(proportionOfAssetsList[idx]*100, 2)
+    with open('output\\api\\data.json', 'w') as f:
+        dump(sol, f)
