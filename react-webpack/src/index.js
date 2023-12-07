@@ -6,7 +6,6 @@ function App() {
     return (
         <div>
             <h1>Biểu đồ danh mục đầu tư hiệu quả nhất</h1>
-            <p>Nhập số lượng tài sản muốn phân bố</p>
             <div>
                 <Chart />
             </div>
