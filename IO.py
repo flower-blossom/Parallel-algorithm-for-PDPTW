@@ -54,7 +54,10 @@ def takeInfoAssetInAPI(sol, expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
         nameOfAssets = ['BTC_USD', 'ETH_USD', 'XRP_USD', 'ADA_USD', 'TRX_USD', 'SOL_USD', 'UNI_USD', 'AVAX_USD', 'LINK_USD', 'BNB_USD', 'ATOM_USD', 'ETC_USD', 'NEAR_USD', 'LUNC_USD', 'FTM_USD', 'DOGE_USD', 'MATIC_USD']
         print(f"Chosen assets: ")
         for idx in range(len(chosenAssetsList)):
+            element = dict()
             print(f"{nameOfAssets[chosenAssetsList[idx]]} - {round(proportionOfAssetsList[idx]*100, 2)} %")
-            sol[nameOfAssets[chosenAssetsList[idx]]] = round(proportionOfAssetsList[idx]*100, 2)
-    with open('output\\api\\data.json', 'w') as f:
+            element["name"] = nameOfAssets[chosenAssetsList[idx]]
+            element["proportion"] = round(proportionOfAssetsList[idx]*100, 2)
+            sol.append(element) 
+    with open('react-webpack\\src\\api\\data.json', 'w') as f:
         dump(sol, f)
