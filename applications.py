@@ -1,3 +1,7 @@
+import time
+import subprocess
+import os 
+
 from vns import VNS
 from pandas import read_excel
 import numpy as np
@@ -6,19 +10,17 @@ from copy import deepcopy
 from multiprocessing import Pool
 from IO import takeInfoAssetInAPI
 from pathlib import Path
-import time
-import subprocess
-import os 
+
 seed(2)
 dir_path = os.path.dirname(os.path.realpath(__file__))
-pathReactFolder = Path(dir_path + "\\react-webpack")
+pathReactFolder = os.path.join(dir_path, "react-webpack")
 
+path = Path('data//API binance//percentReturnsDayData.xlsx')
 
-path = r'data\\API binance\\percentReturnsDayData.xlsx'
 # Read TestData
 my_data = read_excel(path, header=None)
 
-percentInOut = 1
+percentInOut = 0.95
 data_in  = my_data.iloc[:round(percentInOut*my_data.shape[0]), :]
 data_out = my_data.iloc[round(percentInOut*my_data.shape[0]):, :]
 covMatrixIn = data_in.cov().to_numpy()
@@ -59,6 +61,5 @@ if __name__ == '__main__':
         print("----------------------------------------------------------")
         takeInfoAssetInAPI(sol[0], expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
     print("parallel time",time.time()- startTime)   
-    subprocess.check_call('npm install', shell=True, cwd=fr"{pathReactFolder}")       
-    subprocess.check_call('npm start', shell=True, cwd=fr"{pathReactFolder}")   
-# react-webpack\\npm install
+    subprocess.check_call('npm install', shell=True, cwd=pathReactFolder)       
+    subprocess.check_call('npm start', shell=True, cwd=pathReactFolder)   
