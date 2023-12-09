@@ -5,15 +5,16 @@ from random import seed
 from copy import deepcopy
 from multiprocessing import Pool
 from IO import takeInfoAssetInAPI
+from pathlib import Path
 import time
 import subprocess
-seed(2)
 import os 
+seed(2)
 dir_path = os.path.dirname(os.path.realpath(__file__))
-pathReactFolder = dir_path + "\\react-webpack"
+pathReactFolder = Path(dir_path + "\\react-webpack")
 
 
-path = r'data\API binance\percentReturnsDayData.xlsx'
+path = r'data\\API binance\\percentReturnsDayData.xlsx'
 # Read TestData
 my_data = read_excel(path, header=None)
 
@@ -58,6 +59,6 @@ if __name__ == '__main__':
         print("----------------------------------------------------------")
         takeInfoAssetInAPI(sol[0], expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
     print("parallel time",time.time()- startTime)   
-    subprocess.check_call('npm install', shell=True, cwd=pathReactFolder)       
-    subprocess.check_call('npm start', shell=True, cwd=pathReactFolder)   
+    subprocess.check_call('npm install', shell=True, cwd=fr"{pathReactFolder}")       
+    subprocess.check_call('npm start', shell=True, cwd=fr"{pathReactFolder}")   
 # react-webpack\\npm install
