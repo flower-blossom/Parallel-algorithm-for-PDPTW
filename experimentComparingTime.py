@@ -5,12 +5,14 @@ from random import seed
 from multiprocessing import Pool
 import time
 import json
+import subprocess
+
 seed(2)
 
 
 
 if __name__ == '__main__': 
-    path = r'data\realworld dataset\\Datasets\\DowJones\\DowJones.xlsx'
+    path = r'data\realworld dataset\\Datasets\\NASDAQ100\\NASDAQ100.xlsx'
     my_data = read_excel(path, header=0)
 
     percentInOut = 0.8
@@ -70,4 +72,6 @@ if __name__ == '__main__':
     print(timeComparing)
     with open('result.json', 'w') as fp:
         json.dump(timeComparing, fp)        
+        
+    subprocess.check_call('react-webpack\\npm start', shell=True)        
 

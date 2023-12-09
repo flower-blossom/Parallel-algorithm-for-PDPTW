@@ -1,6 +1,7 @@
 Phiên bản Python 3.11.5
 Cài đặt các thư viện cần thiết bằng câu lệnh `pip install -r requirements.txt`. 
-<!-- `conda install -c conda-forge cvxopt` -->
+
+
 
 # DATA 
 Có 3 folder con trong folder data, tương ứng với đó là các bộ dữ liệu:

@@ -40,9 +40,9 @@ def takeInfoAssetInAPI(sol, expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
     print(f"Sharpe Ratio in sample In: {valueIn[0]}")
 
     # Print name assets if it use api data
-    sol = {}
+    sol = []
     if len(expectedVectorIn) == 16:
-        nameOfAssets = ['BTC_USD', 'ETH_USD', 'XRP_USD', 'ADA_USD', 'TRX_USD', 'SOL_USD', 'UNI_USD', 'AVAX_USD', 'LINK_USD', 'BNB_USD', 'ATOM_USD', 'ETC_USD', 'NEAR_USD', 'FTM_USD', 'DOGE_USD', 'MATIC_USD']
+        nameOfAssets = ['BTC', 'ETH', 'XRP', 'ADA', 'TRX', 'SOL', 'UNI', 'AVAX', 'LINK', 'BNB', 'ATOM', 'ETC', 'NEAR', 'FTM', 'DOGE', 'MATIC']
         
         print(f"Chosen assets: ")
         for idx in range(len(chosenAssetsList)):
@@ -51,7 +51,7 @@ def takeInfoAssetInAPI(sol, expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
             
     elif len(expectedVectorIn) == 17:
          
-        nameOfAssets = ['BTC_USD', 'ETH_USD', 'XRP_USD', 'ADA_USD', 'TRX_USD', 'SOL_USD', 'UNI_USD', 'AVAX_USD', 'LINK_USD', 'BNB_USD', 'ATOM_USD', 'ETC_USD', 'NEAR_USD', 'LUNC_USD', 'FTM_USD', 'DOGE_USD', 'MATIC_USD']
+        nameOfAssets = ['BTC', 'ETH', 'XRP', 'ADA', 'TRX', 'SOL', 'UNI', 'AVAX', 'LINK', 'BNB', 'ATOM', 'ETC', 'NEAR', 'LUNC', 'FTM', 'DOGE', 'MATIC']
         print(f"Chosen assets: ")
         for idx in range(len(chosenAssetsList)):
             element = dict()
@@ -59,5 +59,5 @@ def takeInfoAssetInAPI(sol, expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
             element["name"] = nameOfAssets[chosenAssetsList[idx]]
             element["proportion"] = round(proportionOfAssetsList[idx]*100, 2)
             sol.append(element) 
-    with open('react-webpack\\src\\api\\data.json', 'w') as f:
+    with open('react-webpack\\src\\data.json', 'w') as f:
         dump(sol, f)
