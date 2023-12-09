@@ -10,7 +10,7 @@ import subprocess
 seed(2)
 import os 
 dir_path = os.path.dirname(os.path.realpath(__file__))
-b = dir_path + "\\react-webpack"
+pathReactFolder = dir_path + "\\react-webpack"
 
 
 path = r'data\API binance\percentReturnsDayData.xlsx'
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     for sol in results:
         print("----------------------------------------------------------")
         takeInfoAssetInAPI(sol[0], expectedVectorIn, stdIn ,expectedVectorOut, stdOut,)
-        
     print("parallel time",time.time()- startTime)   
-    subprocess.check_call('npm start', shell=True, cwd=b)   
+    subprocess.check_call('npm install', shell=True, cwd=pathReactFolder)       
+    subprocess.check_call('npm start', shell=True, cwd=pathReactFolder)   
 # react-webpack\\npm install
